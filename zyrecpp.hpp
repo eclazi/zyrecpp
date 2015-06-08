@@ -6,35 +6,35 @@
 #include <exception>
 #include <vector>
 
-namespace Zyre
+namespace zyre
 {
-    class ZyreError : public std::runtime_error
+    class error_t : public std::runtime_error
     {
     public:
-        ZyreError(const std::string& what) : std::runtime_error(what) {}
+        error_t(const std::string& what) : std::runtime_error(what) {}
     };
 
-    class ZyreEvent
+    class event_t
     {
     public:
-        ZyreEvent(zyre_event_t* self) : m_self(self) {};
+        event_t(zyre_event_t* self) : m_self(self) {};
 
-        ~ZyreEvent()
+        ~event_t()
         {
             if (m_self)
                 zyre_event_destroy(&m_self);
         }
 
-        ZyreEvent(const ZyreEvent& other) = delete;
-        ZyreEvent operator=(const ZyreEvent& other) = delete;
+        event_t(const event_t& other) = delete;
+        event_t operator=(const event_t& other) = delete;
 
-        ZyreEvent(ZyreEvent&& other)
+        event_t(event_t&& other)
         {
             m_self = other.m_self;
             other.m_self = nullptr;
         }
 
-        ZyreEvent& operator=(ZyreEvent&& other)
+        event_t& operator=(event_t&& other)
         {
             if (&other != this)
             {
@@ -69,7 +69,7 @@ namespace Zyre
             return zyre_event_address(m_self);
         }
 
-        std::string headerValue(const std::string& key) const
+        std::string header_value(const std::string& key) const
         {
             return zyre_event_header(m_self, key.c_str());
         }
@@ -88,10 +88,10 @@ namespace Zyre
         zyre_event_t* m_self;
     };
 
-    class Zyre
+    class node_t
     {
     public:
-        Zyre(const std::string& name = "")
+        node_t(const std::string& name = "")
         {
             if (name != "")
                 m_self = zyre_new(NULL);
@@ -99,22 +99,22 @@ namespace Zyre
                 m_self = zyre_new(name.c_str());
         }
 
-        ~Zyre()
+        ~node_t()
         {
             if (m_self)
                 zyre_destroy(&m_self);
         }
 
-        Zyre(const Zyre& other) = delete;
-        Zyre operator=(const Zyre& other) = delete;
+        node_t(const node_t& other) = delete;
+        node_t operator=(const node_t& other) = delete;
 
-        Zyre(Zyre&& other)
+        node_t(node_t&& other)
         {
             m_self = other.m_self;
             other.m_self = nullptr;
         }
 
-        Zyre& operator=(Zyre&& other)
+        node_t& operator=(node_t&& other)
         {
             if (&other != this)
             {
@@ -139,27 +139,27 @@ namespace Zyre
             return zyre_name(m_self);
         }
 
-        void setHeader(const std::string key, const std::string& value) const
+        void set_header(const std::string key, const std::string& value) const
         {
             zyre_set_header(m_self, key.c_str(), value.c_str());
         }
 
-        void setVerbose() const
+        void set_verbose() const
         {
             zyre_set_verbose(m_self);
         }
 
-        void setPort(int value) const
+        void set_port(int value) const
         {
             zyre_set_port(m_self, value);
         }
 
-        void setInterval(size_t value) const
+        void set_interval(size_t value) const
         {
             zyre_set_interval(m_self, value);
         }
 
-        void setInterface(const std::string& value) const
+        void set_interface(const std::string& value) const
         {
             zyre_set_interface(m_self, value.c_str());
         }
@@ -168,7 +168,7 @@ namespace Zyre
         {
             int rc = zyre_start(m_self);
             if (rc == -1)
-                throw ZyreError("Failed to start Zyre node");
+                throw error_t("Failed to start Zyre node");
         }
 
         void stop() const
@@ -201,36 +201,36 @@ namespace Zyre
             return zyre_recv(m_self);
         }
 
-        ZyreEvent event() const
+        event_t event() const
         {
-            return ZyreEvent(zyre_event_new(m_self));
+            return event_t(zyre_event_new(m_self));
         }
 
         std::vector<std::string> peers() const
         {
             zlist_t* peers = zyre_peers(m_self);
-            std::vector<std::string> ret = toVector(peers);
+            std::vector<std::string> ret = to_vector(peers);
             zlist_destroy(&peers);
             return ret;
         }        
 
-        std::vector<std::string> ownGroups() const
+        std::vector<std::string> own_groups() const
         {
             zlist_t* ownGroups = zyre_own_groups(m_self);
-            std::vector<std::string> ret = toVector(ownGroups);
+            std::vector<std::string> ret = to_vector(ownGroups);
             zlist_destroy(&ownGroups);
             return ret;
         }
 
-        std::vector<std::string> peerGroups() const
+        std::vector<std::string> peer_groups() const
         {
             zlist_t* peerGroups = zyre_peer_groups(m_self);
-            std::vector<std::string> ret = toVector(peerGroups);
+            std::vector<std::string> ret = to_vector(peerGroups);
             zlist_destroy(&peerGroups);
             return ret;
         }
 
-        std::string peerAddress(const std::string& peer) const
+        std::string peer_address(const std::string& peer) const
         {
             char* val = zyre_peer_address(m_self, peer.c_str());
             std::string ret(val);
@@ -239,7 +239,7 @@ namespace Zyre
             return ret;
         }
 
-        std::string peerHeaderValue(const std::string& peer, const std::string& name)
+        std::string peer_header_value(const std::string& peer, const std::string& name)
         {
             char* val = zyre_peer_header_value(m_self, peer.c_str(), peer.c_str());
             std::string ret(val);
@@ -259,7 +259,7 @@ namespace Zyre
         }
 
     private:
-        std::vector<std::string> toVector(zlist_t* list) const
+        std::vector<std::string> to_vector(zlist_t* list) const
         {
             std::vector<std::string> ret;
             void* cursor = zlist_first(list);
