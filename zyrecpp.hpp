@@ -196,7 +196,7 @@ namespace Zyre
             zyre_shout(m_self, group.c_str(), &msg);
         }
 
-        zmsg_t* receive() const
+        zmsg_t* recv() const
         {
             return zyre_recv(m_self);
         }
