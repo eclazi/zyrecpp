@@ -49,24 +49,24 @@ namespace zyre
             zyre_event_print(m_self);
         }
 
-        zyre_event_type_t type() const
+        std::string type() const
         {
             return zyre_event_type(m_self);
         }
 
         std::string sender() const
         {
-            return zyre_event_sender(m_self);
+            return zyre_event_peer_uuid(m_self);
         }
 
         std::string name() const
         {
-            return zyre_event_name(m_self);
+            return zyre_event_peer_name(m_self);
         }
 
         std::string address() const
         {
-            return zyre_event_address(m_self);
+            return zyre_event_peer_addr(m_self);
         }
 
         std::string header_value(const std::string& key) const
@@ -212,7 +212,7 @@ namespace zyre
             std::vector<std::string> ret = to_vector(peers);
             zlist_destroy(&peers);
             return ret;
-        }        
+        }
 
         std::vector<std::string> own_groups() const
         {
@@ -253,9 +253,9 @@ namespace zyre
             return zyre_socket(m_self);
         }
 
-        static void version(int& major, int& minor, int& patch)
+        static int version()
         {
-            zyre_version(&major, &minor, &patch);
+            return zyre_version();
         }
 
     private:
