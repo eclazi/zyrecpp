@@ -141,7 +141,7 @@ namespace zyre
 
         void set_header(const std::string key, const std::string& value) const
         {
-            zyre_set_header(m_self, key.c_str(), value.c_str());
+            zyre_set_header(m_self, key.c_str(), "%s", value.c_str());
         }
 
         void set_verbose() const
