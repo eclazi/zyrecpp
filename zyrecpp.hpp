@@ -51,32 +51,62 @@ namespace zyre
 
         std::string type() const
         {
-            return zyre_event_type(m_self);
+            const char *val = zyre_event_type(m_self);
+            if(val == NULL) {
+                return "";
+            }
+
+            return val;
         }
 
         std::string sender() const
         {
-            return zyre_event_peer_uuid(m_self);
+            const char *val = zyre_event_peer_uuid(m_self);
+            if(val == NULL) {
+                return "";
+            }
+
+            return val;
         }
 
         std::string name() const
         {
-            return zyre_event_peer_name(m_self);
+            const char *val = zyre_event_peer_name(m_self);
+            if(val == NULL) {
+                return "";
+            }
+
+            return val;
         }
 
         std::string address() const
         {
-            return zyre_event_peer_addr(m_self);
+            const char *val = zyre_event_peer_addr(m_self);
+            if(val == NULL) {
+                return "";
+            }
+
+            return val;
         }
 
         std::string header_value(const std::string& key) const
         {
-            return zyre_event_header(m_self, key.c_str());
+            const char *val = zyre_event_header(m_self, key.c_str());
+            if(val == NULL) {
+                return "";
+            }
+
+            return val;
         }
 
         std::string group() const
         {
-            return zyre_event_group(m_self);
+            const char *val = zyre_event_group(m_self);
+            if(val == NULL) {
+                return "";
+            }
+
+            return val;
         }
 
         zmsg_t* message() const
