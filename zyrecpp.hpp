@@ -239,7 +239,11 @@ namespace zyre
         std::vector<std::string> peers() const
         {
             zlist_t* peers = zyre_peers(m_self);
-            std::vector<std::string> ret = to_vector(peers);
+            std::vector<std::string> ret;
+            if(peers == NULL) {
+                return ret;
+            }
+            ret = to_vector(peers);
             zlist_destroy(&peers);
             return ret;
         }
@@ -247,7 +251,11 @@ namespace zyre
         std::vector<std::string> own_groups() const
         {
             zlist_t* ownGroups = zyre_own_groups(m_self);
-            std::vector<std::string> ret = to_vector(ownGroups);
+            std::vector<std::string> ret;
+            if(ownGroups == NULL) {
+                return ret;
+            }
+            ret = to_vector(ownGroups);
             zlist_destroy(&ownGroups);
             return ret;
         }
@@ -255,7 +263,11 @@ namespace zyre
         std::vector<std::string> peer_groups() const
         {
             zlist_t* peerGroups = zyre_peer_groups(m_self);
-            std::vector<std::string> ret = to_vector(peerGroups);
+            std::vector<std::string> ret;
+            if(peerGroups == NULL) {
+                return ret;
+            }
+            ret = to_vector(peerGroups);
             zlist_destroy(&peerGroups);
             return ret;
         }
