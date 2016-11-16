@@ -49,34 +49,64 @@ namespace zyre
             zyre_event_print(m_self);
         }
 
-        zyre_event_type_t type() const
+        std::string type() const
         {
-            return zyre_event_type(m_self);
+            const char *val = zyre_event_type(m_self);
+            if(val == NULL) {
+                return "";
+            }
+
+            return val;
         }
 
         std::string sender() const
         {
-            return zyre_event_sender(m_self);
+            const char *val = zyre_event_peer_uuid(m_self);
+            if(val == NULL) {
+                return "";
+            }
+
+            return val;
         }
 
         std::string name() const
         {
-            return zyre_event_name(m_self);
+            const char *val = zyre_event_peer_name(m_self);
+            if(val == NULL) {
+                return "";
+            }
+
+            return val;
         }
 
         std::string address() const
         {
-            return zyre_event_address(m_self);
+            const char *val = zyre_event_peer_addr(m_self);
+            if(val == NULL) {
+                return "";
+            }
+
+            return val;
         }
 
         std::string header_value(const std::string& key) const
         {
-            return zyre_event_header(m_self, key.c_str());
+            const char *val = zyre_event_header(m_self, key.c_str());
+            if(val == NULL) {
+                return "";
+            }
+
+            return val;
         }
 
         std::string group() const
         {
-            return zyre_event_group(m_self);
+            const char *val = zyre_event_group(m_self);
+            if(val == NULL) {
+                return "";
+            }
+
+            return val;
         }
 
         zmsg_t* message() const
@@ -141,7 +171,7 @@ namespace zyre
 
         void set_header(const std::string key, const std::string& value) const
         {
-            zyre_set_header(m_self, key.c_str(), value.c_str());
+            zyre_set_header(m_self, key.c_str(), "%s", value.c_str());
         }
 
         void set_verbose() const
@@ -209,15 +239,23 @@ namespace zyre
         std::vector<std::string> peers() const
         {
             zlist_t* peers = zyre_peers(m_self);
-            std::vector<std::string> ret = to_vector(peers);
+            std::vector<std::string> ret;
+            if(peers == NULL) {
+                return ret;
+            }
+            ret = to_vector(peers);
             zlist_destroy(&peers);
             return ret;
-        }        
+        }
 
         std::vector<std::string> own_groups() const
         {
             zlist_t* ownGroups = zyre_own_groups(m_self);
-            std::vector<std::string> ret = to_vector(ownGroups);
+            std::vector<std::string> ret;
+            if(ownGroups == NULL) {
+                return ret;
+            }
+            ret = to_vector(ownGroups);
             zlist_destroy(&ownGroups);
             return ret;
         }
@@ -225,7 +263,11 @@ namespace zyre
         std::vector<std::string> peer_groups() const
         {
             zlist_t* peerGroups = zyre_peer_groups(m_self);
-            std::vector<std::string> ret = to_vector(peerGroups);
+            std::vector<std::string> ret;
+            if(peerGroups == NULL) {
+                return ret;
+            }
+            ret = to_vector(peerGroups);
             zlist_destroy(&peerGroups);
             return ret;
         }
@@ -253,9 +295,9 @@ namespace zyre
             return zyre_socket(m_self);
         }
 
-        static void version(int& major, int& minor, int& patch)
+        static int version()
         {
-            zyre_version(&major, &minor, &patch);
+            return zyre_version();
         }
 
     private:
