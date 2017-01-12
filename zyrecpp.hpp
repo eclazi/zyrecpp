@@ -123,7 +123,7 @@ namespace zyre
     public:
         node_t(const std::string& name = "")
         {
-            if (name != "")
+            if (name == "")
                 m_self = zyre_new(NULL);
             else
                 m_self = zyre_new(name.c_str());
