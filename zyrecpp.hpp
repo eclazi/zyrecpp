@@ -283,7 +283,7 @@ namespace zyre
 
         std::string peer_header_value(const std::string& peer, const std::string& name)
         {
-            char* val = zyre_peer_header_value(m_self, peer.c_str(), peer.c_str());
+            char* val = zyre_peer_header_value(m_self, peer.c_str(), name.c_str());
             std::string ret(val);
             if (val != NULL)
                 delete val;
